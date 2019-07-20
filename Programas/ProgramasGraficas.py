@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[32]:
+# In[3]:
 
 
 from sympy import *
@@ -9,6 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sympy.plotting import plot3d
 from mpl_toolkits.mplot3d.axes3d import Axes3D, get_test_data
+from matplotlib.patches import Polygon
 
 
 def gra3d(mapeo,mapeo2,xmin, xmax, ymin,ymax,              guarda=False,malla=True,actilim=True):
@@ -132,15 +133,48 @@ def gra3d(mapeo,mapeo2,xmin, xmax, ymin,ymax,              guarda=False,malla=Tr
 
 
 
-# In[33]:
+# In[54]:
 
 
-#Gragraficasc(mapeo,xmin,xmax,ymin,ymax,guarda=False,malla=True,actilim=True):
-gra3d('sin((x**2+y**2)**0.5)','0.1*x+0.1*y',-4,4,-4,4)
+def gra2di(mapeo,Intervalo,a,b,guarda=False):
+    X = Symbol("x", real=True)
+    f1=sympify(mapeo)
+    f=lambdify((X),f1,("sympy",))
+    g=lambdify((X),f1,("numpy",))
+    
+    fig=plt.figure(figsize=(8,4))#
+    ax=plt.axes()
+    x=np.linspace(Intervalo[0],Intervalo[1],300)
+    
+    y=g(x)
+    ax.plot(x,y,c='r',lw=3,label=r'Grafica de $f(x)$')
+    ax.grid()
+    ax.set_xlabel('$x$',fontsize=15)
+    #ax.set_ylabel('',fontsize=15)
+    #ax.set_title('Funcion de densidad de probabilidad $f(x)$',fontsize=20)
+    leg = plt.legend(loc='best', shadow=True, fancybox=True)
+    leg.get_frame().set_alpha(0.9)
+    ax.xaxis.set_label_coords(0.5, -0.05)
+    ax.yaxis.set_label_coords(-0.08,0.5)
+    ax.spines['right'].set_color('none')
+    ax.spines['top'].set_color('none')
+    ax.xaxis.set_ticks_position('bottom')
+    ax.spines['bottom'].set_position(('data',0))
+    ax.yaxis.set_ticks_position('left')
+    ax.spines['left'].set_position(('data',0))
+    xlim=ax.get_xlim()
+    ylim=ax.get_ylim()
+    ax.set_xlim(min(xlim[0]*(0.7),xlim[0]*(1.3)),max(xlim[1]*1.3,xlim[1]*0.7))
+    ax.set_ylim(min(ylim[0]*(0.7),ylim[0]*(1.3)),max(ylim[1]*1.3,ylim[1]*0.7))
+    x = np.linspace(a, b)
+    y = g(x)
+    
+    ax.fill_between(x,0,y)
+    
+    if guarda:
+        plt.savefig("fvac.png")# Se puede guardar solo en el formato deseado
+        plt.savefig("fvac.pdf")#
+        #plt.savefig("fvac.jpg")#
+    plt.show()
 
-
-# In[34]:
-
-
-gra3d('(1 - x / 2 + x**5 + y**3) * exp(-x**2 -y**2)','0.1*x+0.1*y',-4,4,-4,4)
 
