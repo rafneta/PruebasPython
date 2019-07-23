@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[3]:
+# In[90]:
 
 
 from sympy import *
@@ -12,7 +12,7 @@ from mpl_toolkits.mplot3d.axes3d import Axes3D, get_test_data
 from matplotlib.patches import Polygon
 
 
-def gra3d(mapeo,mapeo2,xmin, xmax, ymin,ymax,              guarda=False,malla=True,actilim=True):
+def gra3d(mapeo,xmin, xmax, ymin,ymax,guarda=False,malla=True,actilim=True):
     z= Symbol('z')
     x = Symbol("x", real=True)
     y = Symbol("y", real=True)
@@ -33,11 +33,9 @@ def gra3d(mapeo,mapeo2,xmin, xmax, ymin,ymax,              guarda=False,malla=Tr
     
     
     f1=sympify(mapeo)
-    f2=sympify(mapeo2)
     f=lambdify((x,y),f1,("sympy",))
     g=lambdify((x,y),f1,("numpy",))
-    F=lambdify((x,y),f2,("sympy",))
-    G=lambdify((x,y),f2,("numpy",))
+ 
     
     if  actilim==False or xmin>=xmax or ymin>=ymax:
         xmin=-5
@@ -50,13 +48,13 @@ def gra3d(mapeo,mapeo2,xmin, xmax, ymin,ymax,              guarda=False,malla=Tr
     Y = np.arange(ymin, ymax, 0.25)
     X, Y = np.meshgrid(X, Y)
     Z=g(X,Y)
-    axx1.plot_surface(X, Y, Z, rstride=1, cstride=1,linewidth=0, antialiased=False,alpha=0.8)
+    #axx1.plot_surface(X, Y, Z, rstride=1, cstride=1,linewidth=0, antialiased=False,alpha=0.8)
     
-    axx1.contour(X, Y, Z, zdir='z', offset=np.min(Z)-0.4*abs(np.min(Z)))
+    axx1.contour(X, Y, Z, zdir='z', offset=np.min(Z)-0.1*abs(np.min(Z)))
     
-    axx1.contour(X, Y, Z, zdir='y', offset=ymax+0.4*abs(ymax))
+    axx1.contour(X, Y, Z, zdir='y', offset=ymax+0.1*abs(ymax))
     
-    axx1.contour(X, Y, Z, zdir='x', offset=xmin-0.4*abs(xmin))
+    axx1.contour(X, Y, Z, zdir='x', offset=xmin-0.1*abs(xmin))
     
     Z=g(X,Y)
     #axx3.contourf(X, Y, Z)
@@ -70,9 +68,9 @@ def gra3d(mapeo,mapeo2,xmin, xmax, ymin,ymax,              guarda=False,malla=Tr
     
     
     Z=g(X,Y)
-    axx5.contourf(X, Y, Z, zdir='z', offset=np.min(Z)-0.4*abs(np.min(Z)), cmap='coolwarm')
-    axx5.contourf(X, Y, Z, zdir='x', offset=xmin-0.4*abs(xmin), cmap='coolwarm')
-    axx5.contourf(X, Y, Z, zdir='y', offset=ymax+0.1*abs(ymax), cmap='coolwarm')
+    axx5.contourf(X, Y, Z, zdir='z', offset=np.min(Z)-0.1*abs(np.min(Z)), cmap='coolwarm')
+    axx5.contourf(X, Y, Z, zdir='x', offset=xmin-0.1*abs(xmin), cmap='coolwarm')
+    #axx5.contourf(X, Y, Z, zdir='y', offset=ymax+0.1*abs(ymax), cmap='coolwarm')
     axx5.plot_surface(X, Y, Z, rstride=8, cstride=8, alpha=0.5)
     
     
@@ -82,9 +80,9 @@ def gra3d(mapeo,mapeo2,xmin, xmax, ymin,ymax,              guarda=False,malla=Tr
     axx4.plot_wireframe(X, Y, Z, color='green')
     X = np.arange(xmin/2, xmax/2, 0.25)
     Y = np.arange(ymin/2, ymax/2, 0.25)
-    X, Y = np.meshgrid(X, Y)
-    Z=G(X,Y)
-    axx4.plot_surface(X, Y, Z, rstride=1, cstride=1,linewidth=0, antialiased=False,alpha=1)
+    #X, Y = np.meshgrid(X, Y)
+    #Z=G(X,Y)
+    #axx4.plot_surface(X, Y, Z, rstride=1, cstride=1,linewidth=0, antialiased=False,alpha=1)
     
     
  
@@ -123,17 +121,138 @@ def gra3d(mapeo,mapeo2,xmin, xmax, ymin,ymax,              guarda=False,malla=Tr
     axx5.set_ylabel(r"$y$",fontsize=10,color="b")
    
     if guarda:
-        plt.savefig("graficasc.png")
-        plt.savefig("graficasc.svg")
-        plt.savefig("graficasc.pdf")
+        plt.savefig("grafica3D.png")
+        #plt.savefig("graficasc.svg")
+        plt.savefig("grafica3D.pdf")
         # No soporta en Binder
         # plt.savefig("graficasc.jpg")
-        plt.close()
+    plt.show()
 
 
 
 
-# In[54]:
+# In[97]:
+
+
+def gra3dp(mapeo,mapeo2,xmin, xmax, ymin,ymax,guarda=False,malla=True,actilim=True):
+    z= Symbol('z')
+    x = Symbol("x", real=True)
+    y = Symbol("y", real=True)
+    ancho_cuadro=1.4
+    marcador="o"
+    tam_marcador=10
+    fig=plt.figure(figsize=(20,10))
+
+    
+    
+    axx1=fig.add_subplot(232,projection='3d',facecolor='w')
+    axx3=fig.add_subplot(233,facecolor='w')
+    axx2=fig.add_subplot(234,projection='3d',facecolor='w')
+    axx4=fig.add_subplot(235,projection='3d',facecolor='w')
+    axx5=fig.add_subplot(236,projection='3d',facecolor='w')
+    
+    at1=fig.add_subplot(231,facecolor='w')
+    
+    
+    f1=sympify(mapeo)
+    f2=sympify(mapeo2)
+    f=lambdify((x,y),f1,("sympy",))
+    g=lambdify((x,y),f1,("numpy",))
+    F=lambdify((x,y),f2,("sympy",))
+    G=lambdify((x,y),f2,("numpy",))
+    
+    if  actilim==False or xmin>=xmax or ymin>=ymax:
+        xmin=-5
+        xmax=5
+        ymin=-5
+        ymax=5
+    
+    
+    X = np.arange(xmin, xmax, 0.25)
+    Y = np.arange(ymin, ymax, 0.25)
+    X, Y = np.meshgrid(X, Y)
+    Z=g(X,Y)
+    #axx1.plot_surface(X, Y, Z, rstride=1, cstride=1,linewidth=0, antialiased=False,alpha=0.8)
+    
+    axx1.contour(X, Y, Z, zdir='z', offset=np.min(Z)-0.1*abs(np.min(Z)))
+    
+    axx1.contour(X, Y, Z, zdir='y', offset=ymax+0.1*abs(ymax))
+    
+    axx1.contour(X, Y, Z, zdir='x', offset=xmin-0.1*abs(xmin))
+    
+    Z=g(X,Y)
+    #axx3.contourf(X, Y, Z)
+    C = axx3.contour(X, Y, Z)
+    axx3.clabel(C, inline=1, fontsize=12)
+    
+    Z=g(X,Y)
+    
+    axx2.plot_surface(X, Y, Z, rstride=1, cstride=1,cmap='winter',edgecolor='none')
+    axx2.contour3D(X, Y, Z, 50)
+    
+    
+    Z=g(X,Y)
+    axx5.contourf(X, Y, Z, zdir='z', offset=np.min(Z)-0.1*abs(np.min(Z)), cmap='coolwarm')
+    axx5.contourf(X, Y, Z, zdir='x', offset=xmin-0.1*abs(xmin), cmap='coolwarm')
+    #axx5.contourf(X, Y, Z, zdir='y', offset=ymax+0.1*abs(ymax), cmap='coolwarm')
+    axx5.plot_surface(X, Y, Z, rstride=8, cstride=8, alpha=0.5)
+    
+    
+    
+    Z=g(X,Y)
+    #axx4.contour3D(X, Y, Z, 50)
+    axx4.plot_wireframe(X, Y, Z, color='green')
+    X = np.arange(xmin/2, xmax/2, 0.25)
+    Y = np.arange(ymin/2, ymax/2, 0.25)
+    X, Y = np.meshgrid(X, Y)
+    Z=G(X,Y)
+    axx4.plot_surface(X, Y, Z, rstride=1, cstride=1,linewidth=0, antialiased=False,alpha=1)
+    
+      
+    #at1.set_xticklabels("", visible=False)
+    #at1.set_yticklabels("", visible=False)
+    at1.set_axis_off()
+    at1.grid(false)
+    at1.set_xlim(0,1)
+    at1.set_ylim(0,1)
+    
+    at1.text(0.2, 0.9, "La funcion", fontsize=15)
+    at1.text(0.2, 0.8, "$f(x,y)=%s" % latex(f(x,y))+"$", fontsize=15)
+    
+    
+    axx1.set_xlabel(r"$x$ ",fontsize=10,color="b")
+    axx1.set_ylabel(r"$y$",fontsize=10,color="b")
+    #title=axx1.set_title(r"$\mathbb{R}e(f(z))$", y=1.1,fontsize=20, color="b")
+    
+    axx3.set_xlabel(r"$x$ ",fontsize=10,color="b")
+    axx3.set_ylabel(r"$y$",fontsize=10,color="b")
+    #title=axx3.set_title(r"$\mathbb{I}m(f(z))$", y=1,fontsize=20, color="b")
+    
+    axx2.set_xlabel(r"$x$ ",fontsize=10,color="b")
+    axx2.set_ylabel(r"$y$",fontsize=10,color="b")
+    #title=axx2.set_title(r"$\|f(z)\|$", y=1,fontsize=20, color="b")
+
+
+    axx4.set_xlabel(r"$x$ ",fontsize=10,color="b")
+    axx4.set_ylabel(r"$y$",fontsize=10,color="b")
+    #title=axx4.set_title(r"$\measuredangle f(z)$", y=1,fontsize=20, color="b")
+    
+    axx5.set_xlabel(r"$x$ ",fontsize=10,color="b")
+    axx5.set_ylabel(r"$y$",fontsize=10,color="b")
+   
+    if guarda:
+        plt.savefig("grafica3Dp.png")
+        #plt.savefig("graficasc.svg")
+        plt.savefig("grafica3Dp.pdf")
+        # No soporta en Binder
+        # plt.savefig("graficasc.jpg")
+    plt.show()
+
+
+
+
+
+# In[77]:
 
 
 def gra2di(mapeo,Intervalo,a,b,guarda=False):
@@ -172,9 +291,35 @@ def gra2di(mapeo,Intervalo,a,b,guarda=False):
     ax.fill_between(x,0,y)
     
     if guarda:
-        plt.savefig("fvac.png")# Se puede guardar solo en el formato deseado
-        plt.savefig("fvac.pdf")#
+        plt.savefig("gra2Di.png")# Se puede guardar solo en el formato deseado
+        plt.savefig("gra2Di.pdf")#
         #plt.savefig("fvac.jpg")#
     plt.show()
 
+
+
+# In[102]:
+
+
+def cuadrosampler(filas,columnas,colores):
+    fig=plt.figure(figsize=(8,8))#
+    ax=plt.axes()
+    #fig.subplots_adjust(wspace=0.5)
+
+    n=np.random.randint(colores, size=(filas, columnas)) 
+    n=n+1
+    im1 = ax.imshow(n,cmap="Set3")
+    for i in range(filas):
+        for j in range(columnas):
+            text = ax.text(j, i, n[i, j],ha="center", va="center", color="k")
+    for edge, spine in ax.spines.items():
+        spine.set_visible(False)
+
+    ax.set_xticks(np.arange(n.shape[1]+1)-.5, minor=True)
+    ax.set_yticks(np.arange(n.shape[0]+1)-.5, minor=True)
+    ax.grid(which="minor", color="w", linestyle='-', linewidth=3)
+    ax.tick_params(which="minor", bottom=False, left=False)
+    #ax.set_axis_off()
+    #print n
+    plt.show()
 
